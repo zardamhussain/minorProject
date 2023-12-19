@@ -6,15 +6,15 @@ import styles from "../../style";
 // Import Navbar and Footer components
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { Axios } from "axios";
+import RingLoader from "react-spinners/RingLoader";
 
 // InputOutput component
 const InputOutput = () => {
   // State for input text
   const [inputText, setInputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   // State for output text
   const [outputText, setOutputText] = useState("");
-
   // Handle input change
   const handleInputChange = (event) => {
     setInputText(event.target.value);
@@ -22,16 +22,25 @@ const InputOutput = () => {
 
   const handleButtonClick = async () => {
 
-    const response = await fetch(`http://127.0.0.1:5000/getqestions/${inputText}`);
-    const res = JSON.parse(await response.json());
+    try{
+      setOutputText("");
+      setIsLoading(true);
+      const response = await fetch(`http://127.0.0.1:5000/getqestions/${inputText}`);
 
-    let ans = "";
-    let q = 1;
-    for(let item in res) {
-      ans += `Q${q++}: ${item}\nAns: ${res[item]}\n\n`
+      const res = JSON.parse(await response.json());
+
+      let ans = "";
+      let q = 1;
+      for(let item in res) {
+        ans += `Q${q++}: ${item}\nAns: ${res[item]}\n\n`
+      }
+      setOutputText(ans);
+      setIsLoading(false);
     }
-
-    setOutputText(ans);
+    catch(e) {
+      setInputText("");
+      setIsLoading(false);
+    }
 
   };
 
@@ -41,6 +50,17 @@ const InputOutput = () => {
 
   return (
     <div className="bg-primary w-full overflow-hidden">
+
+      {
+        isLoading && <div className="h-screen w-full flex justify-center items-center absolute bg-primary opacity-70">
+        <RingLoader
+        color={'#36d7b7'}
+        loading={isLoading}
+        size={150}
+          />
+        </div>
+      }
+
       <main>
         <div className={`${styles.paddingX} ${styles.flexCenter}`}>
           <div className={`${styles.boxWidth}`}>

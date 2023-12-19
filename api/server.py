@@ -8,7 +8,7 @@ CORS(app)
 
 @app.route("/getqestions/<text>")
 def hello_world(text):
-    res = requests.get(f'https://9047-34-106-89-98.ngrok-free.app/getqestions/{text}')
+    res = requests.get(f'https://43a3-35-196-33-35.ngrok-free.app/getqestions/{text}')
     return jsonify(res.text)
 
 
